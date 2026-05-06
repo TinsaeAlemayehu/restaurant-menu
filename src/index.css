@@ -1,0 +1,97 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=Inter:wght@400;500;600&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-serif: "Playfair Display", serif;
+  --font-sans: "Inter", system-ui, sans-serif;
+  
+  --color-espresso: #1A0E06;
+  --color-charcoal: #121212;
+  --color-amber: #FFBF00;
+  --color-gold: #C89B3C;
+  --color-cream: #F5ECD7;
+  --color-olive: #3D4A1E;
+  --color-glass: rgba(255, 255, 255, 0.05);
+  --color-glass-border: rgba(255, 255, 255, 0.1);
+}
+
+@layer base {
+  body {
+    @apply bg-espresso text-cream font-sans min-h-screen overflow-hidden;
+    background-color: #0c0704;
+    position: relative;
+  }
+}
+
+@layer utilities {
+  .glass-panel {
+    @apply backdrop-blur-2xl bg-white/5 border border-white/10 shadow-2xl;
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.8);
+  }
+
+  .liquid-reflection {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .liquid-reflection::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(
+      var(--tw-gradient-from, transparent) 0%,
+      rgba(255, 255, 255, 0.05) 50%,
+      transparent 100%
+    );
+    transform: rotate(45deg);
+    animation: liquid-flow 8s infinite linear;
+    pointer-events: none;
+  }
+
+  .mesob-texture {
+    background-image: 
+      repeating-linear-gradient(45deg, rgba(200, 155, 60, 0.05) 0px, rgba(200, 155, 60, 0.05) 1px, transparent 1px, transparent 12px),
+      repeating-linear-gradient(-45deg, rgba(200, 155, 60, 0.05) 0px, rgba(200, 155, 60, 0.05) 1px, transparent 1px, transparent 12px),
+      radial-gradient(circle at 50% 50%, rgba(200, 155, 60, 0.02) 2px, transparent 4px);
+    background-size: 12px 12px, 12px 12px, 24px 24px;
+  }
+
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+}
+
+@keyframes liquid-flow {
+  0% { transform: rotate(45deg) translateY(-100%); }
+  100% { transform: rotate(45deg) translateY(100%); }
+}
+
+@keyframes smoke-organic {
+  0% { transform: translate(0, 0) scale(0.8) rotate(0deg); opacity: 0; }
+  25% { transform: translate(15px, -30px) scale(1) rotate(5deg); opacity: 0.2; }
+  50% { transform: translate(-8px, -60px) scale(1.2) rotate(-5deg); opacity: 0.1; }
+  100% { transform: translate(0, -120px) scale(1.5) rotate(0deg); opacity: 0; }
+}
+
+.smoke-particle {
+  position: absolute;
+  filter: blur(40px);
+  background: radial-gradient(circle, rgba(245, 236, 217, 0.2) 0%, transparent 70%);
+  animation: smoke-organic 12s infinite ease-in-out;
+}
+
+.glass-pill {
+  @apply backdrop-blur-xl bg-white/10 border border-white/20 rounded-full transition-all duration-500;
+}
+
+.glass-pill:hover {
+  @apply bg-white/20 border-gold/50 shadow-[0_0_20px_rgba(200,155,60,0.2)];
+}
+
