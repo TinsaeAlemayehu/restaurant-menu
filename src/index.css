@@ -17,16 +17,66 @@
 
 @layer base {
   body {
-    @apply bg-espresso text-cream font-sans min-h-screen overflow-hidden;
-    background-color: #0c0704;
+    @apply bg-white text-espresso font-sans min-h-screen overflow-hidden;
     position: relative;
   }
 }
 
 @layer utilities {
+  .liquid-glass {
+    @apply backdrop-blur-2xl border border-white/40 shadow-2xl;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.3) 0%, rgba(255, 255, 255, 0.1) 100%);
+    box-shadow: inset 0 0 20px rgba(255, 255, 255, 0.5);
+  }
+
   .glass-panel {
-    @apply backdrop-blur-2xl bg-white/5 border border-white/10 shadow-2xl;
-    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.8);
+    @apply backdrop-blur-2xl bg-white/60 border border-white/40 shadow-xl overflow-hidden;
+    position: relative;
+  }
+
+  .glass-panel::after {
+    content: '';
+    @apply absolute inset-0 pointer-events-none;
+    background: linear-gradient(
+      105deg,
+      transparent 20%,
+      rgba(255, 255, 255, 0.2) 40%,
+      rgba(255, 255, 255, 0.4) 50%,
+      rgba(255, 255, 255, 0.2) 60%,
+      transparent 80%
+    );
+    transform: translateX(-100%) skewX(-15deg);
+    transition: transform 1s ease-in-out;
+  }
+
+  .glass-panel:hover::after {
+    transform: translateX(100%) skewX(-15deg);
+  }
+
+  .liquid-bg-animate {
+    @apply absolute inset-0 pointer-events-none overflow-hidden;
+    background: #FDFCFB;
+    z-index: -1;
+  }
+
+  .liquid-bg-animate::before {
+    content: '';
+    @apply absolute inset-[-50%];
+    background: radial-gradient(circle at 50% 50%, rgba(200, 155, 60, 0.1), transparent 50%);
+    animation: liquid-swirl 25s infinite linear;
+    filter: blur(80px);
+  }
+
+  .liquid-bg-animate::after {
+    content: '';
+    @apply absolute inset-[-50%];
+    background: radial-gradient(circle at 30% 70%, rgba(255, 191, 0, 0.06), transparent 50%);
+    animation: liquid-swirl 18s infinite linear reverse;
+    filter: blur(100px);
+  }
+
+  .glass-panel-dark {
+    @apply backdrop-blur-2xl bg-black/5 border border-white/5 shadow-2xl;
   }
 
   .liquid-reflection {
@@ -66,6 +116,11 @@
     -ms-overflow-style: none;
     scrollbar-width: none;
   }
+}
+
+@keyframes liquid-swirl {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
 }
 
 @keyframes liquid-flow {
