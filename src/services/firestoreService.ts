@@ -60,6 +60,7 @@ function handleFirestoreError(error: unknown, operationType: OperationType, path
 }
 
 export async function createUserProfile(user: any) {
+  if (!db) return;
   const path = `users/${user.uid}`;
   try {
     await setDoc(doc(db, 'users', user.uid), {
@@ -75,6 +76,7 @@ export async function createUserProfile(user: any) {
 }
 
 export async function placeOrder(userId: string, items: any[], subtotal: number, total: number) {
+  if (!db) throw new Error("Database not initialized");
   const orderId = doc(collection(db, 'orders')).id;
   const path = `orders/${orderId}`;
   try {
@@ -95,6 +97,7 @@ export async function placeOrder(userId: string, items: any[], subtotal: number,
 }
 
 export async function getUserOrders(userId: string) {
+  if (!db) return [];
   const path = 'orders';
   try {
     const q = query(

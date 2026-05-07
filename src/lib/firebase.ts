@@ -3,13 +3,28 @@ import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChang
 import { getFirestore, doc, getDocFromServer } from 'firebase/firestore';
 import firebaseConfig from '../../firebase-applet-config.json';
 
-const app = initializeApp(firebaseConfig);
-export const auth = getAuth(app);
-export const db = getFirestore(app, firebaseConfig.firestoreDatabaseId);
+let app;
+let auth: any;
+let db: any;
+
+try {
+  if (!firebaseConfig || !firebaseConfig.apiKey) {
+    throw new Error("Firebase configuration is missing or incomplete.");
+  }
+  app = initializeApp(firebaseConfig);
+  auth = getAuth(app);
+  db = getFirestore(app, firebaseConfig.firestoreDatabaseId);
+} catch (error) {
+  console.error("Firebase Initialization Error:", error);
+  // We'll export mock objects or handle this in services
+}
+
+export { auth, db };
 export const googleProvider = new GoogleAuthProvider();
 
 // Validation connection to Firestore as per critical instructions
 async function testConnection() {
+  if (!db) return;
   try {
     await getDocFromServer(doc(db, 'test', 'connection'));
   } catch (error) {
