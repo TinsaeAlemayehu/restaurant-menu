@@ -23,7 +23,8 @@ import {
   ChefHat,
   Flame,
   LogOut,
-  History
+  History,
+  X
 } from 'lucide-react';
 import { MENU_ITEMS, CATEGORIES, MenuItem, Category } from './constants';
 import { getMealRecommendation } from './services/geminiService';
@@ -125,6 +126,7 @@ export default function App() {
   }, [activeCategory, searchQuery, sortBy]);
 
   const addToCart = (item: MenuItem) => {
+    setIsCartOpen(true);
     setCart(prev => {
       const existing = prev.find(i => i.id === item.id);
       if (existing) {
@@ -346,24 +348,40 @@ export default function App() {
       )}
 
       {/* Persistent Platform Sidebar (Desktop) / Slide-over (Mobile) */}
-      <aside className={`
-        fixed md:relative z-[100] inset-y-4 right-4 w-[calc(100%-2rem)] md:w-[320px] lg:w-[350px]
-        transition-transform duration-500 ease-out
-        ${isCartOpen || cart.length > 0 ? 'translate-x-0' : 'translate-x-[120%] md:translate-x-0'}
-      `}>
-        <div className="glass-panel h-full rounded-[2rem] flex flex-col border-white/20 shadow-2xl overflow-hidden bg-white/40">
-          <div className="p-6 border-b border-black/5">
-            <h2 className="text-espresso uppercase tracking-[0.4em] font-black text-sm mb-4">Mesob Selection</h2>
-            <div className="bg-slate-50 rounded-2xl p-4 border border-black/5 flex items-center gap-4">
-              <div className="w-10 h-10 rounded-xl bg-gold/10 flex items-center justify-center text-gold">
-                <Clock size={18} />
+      <AnimatePresence>
+        {(isCartOpen || (cart.length > 0)) && (
+          <motion.aside 
+            initial={{ x: '100%' }}
+            animate={{ x: 0 }}
+            exit={{ x: '100%' }}
+            transition={{ type: 'spring', damping: 25, stiffness: 200 }}
+            className={`
+              fixed md:relative z-[100] inset-y-4 right-4 w-[calc(100%-2rem)] md:w-[320px] lg:w-[350px]
+              ${(!isCartOpen && cart.length > 0) ? 'hidden md:flex' : 'flex'}
+            `}
+          >
+            <div className="glass-panel h-full rounded-[2rem] flex flex-col border-white/20 shadow-2xl overflow-hidden bg-white/40">
+              <div className="p-6 border-b border-black/5 flex items-center justify-between">
+                <h2 className="text-espresso uppercase tracking-[0.4em] font-black text-sm">Mesob Selection</h2>
+                <button 
+                  onClick={() => setIsCartOpen(false)}
+                  className="md:hidden w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-espresso"
+                >
+                  <X size={16} />
+                </button>
               </div>
-              <div>
-                 <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest leading-none mb-1">Ritual Wait Time</p>
-                 <p className="text-sm font-black text-espresso">25 - 35 mins</p>
+              
+              <div className="px-6 py-2">
+                <div className="bg-slate-50 rounded-2xl p-4 border border-black/5 flex items-center gap-4">
+                  <div className="w-10 h-10 rounded-xl bg-gold/10 flex items-center justify-center text-gold">
+                    <Clock size={18} />
+                  </div>
+                  <div>
+                    <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest leading-none mb-1">Ritual Wait Time</p>
+                    <p className="text-sm font-black text-espresso">25 - 35 mins</p>
+                  </div>
+                </div>
               </div>
-           </div>
-          </div>
 
           <div className="flex-1 overflow-y-auto p-6 space-y-6 flex flex-col no-scrollbar">
             {cart.length === 0 ? (
@@ -422,7 +440,9 @@ export default function App() {
              </button>
           </div>
         </div>
-      </aside>
+      </motion.aside>
+      )}
+      </AnimatePresence>
 
       {/* AI Recommendation Modal */}
       <AnimatePresence>
